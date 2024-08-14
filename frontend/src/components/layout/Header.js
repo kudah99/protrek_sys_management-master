@@ -276,7 +276,7 @@ function Header({
         </Col>
         <Col span={24} md={18} className="header-control">
           <Badge size="small" count={0}>
-            <Dropdown overlay={menu} trigger={["click"]}>
+            <Dropdown overlay={menu}>
               <a
                 href=""
                 className="ant-dropdown-link"
