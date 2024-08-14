@@ -136,7 +136,7 @@ const Tasks = () => {
   return (
     <>
       <div className="layout-content">
-        <Card title="Projects" bordered={false}>
+        <Card title="All tasks" bordered={false} >
           <Table columns={taskColumns} dataSource={tasks} rowKey="_id" />
         </Card>
       </div>

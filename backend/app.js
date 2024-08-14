@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const projectsRoutes = require("./routes/projectRoute");
 const userRoutes = require("./routes/userRoute");
 const taskRoutes = require("./routes/taskRoutes")
+const statsRoutes = require("./routes/stats")
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 
@@ -32,6 +33,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/projects", projectsRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/tasks",taskRoutes);
+app.use("/api/stats",statsRoutes)
 
 // connecting to the database(mongodb)
 mongoose.set("strictQuery", false);

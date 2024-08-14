@@ -6,7 +6,7 @@ import Signup from "./pages/Signup";
 import AddTask from "./pages/AddTask";
 import AddTeamMember from "./pages/AddTeam";
 import AddProject from "./pages/AddProject";
-import Team from "./pages/Team";
+import UsersList from "./pages/Team";
 import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
 import Profile from "./pages/Profile";
@@ -29,7 +29,7 @@ function App() {
         <Route path="/projects" element={user ? <Projects /> : <Navigate to="/login" />} />
         <Route path="/projects/add" element={user ? <AddProject /> : <Navigate to="/login" />} />
         <Route path="/projects/:id" element={user ? <ProjectDetail /> : <Navigate to="/login" />} /> 
-        <Route path="/my-team" element={user ? <Team /> : <Navigate to="/login" />} />
+        <Route path="/my-team" element={user ? <UsersList /> : <Navigate to="/login" />} />
         <Route path="/my-team/new" element={user ? <AddTeamMember /> : <Navigate to="/login" />} />
         <Route exact path="/profile" component={Profile} />
       </Route>

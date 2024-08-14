@@ -189,7 +189,7 @@ body {
   width: 32px;
   height: 32px;
   background-color: #fff;
-  box-shadow: 0 4px 6px rgb(0 0 0 / 12%);
+  box-shadow: none;
   border-radius: 6px;
   justify-content: center;
   align-items: center;

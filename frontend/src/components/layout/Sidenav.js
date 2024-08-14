@@ -177,7 +177,7 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
         <Menu.Item key="7">
-          <NavLink to="/sign-in">
+          <NavLink to="/my-team">
             <span className="icon">{people}</span>
             <span className="label">My team</span>
           </NavLink>
