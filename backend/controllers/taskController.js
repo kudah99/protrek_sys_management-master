@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Task = require("../models/taskModel");
 const User = require("../models/userModel");
+const nodemailer = require('nodemailer');
 
 // Get all tasks
 const getAllTasks = async (req, res) => {
@@ -55,8 +56,6 @@ const postTask = async (req, res) => {
     if (!assignedUser) {
       return res.status(404).json({ error: "Assigned user not found!" });
     }
-    // email
-    console.log(req.body)
 
     // Create the task
     const task = await Task.create({
@@ -68,13 +67,38 @@ const postTask = async (req, res) => {
       dueDate,
     });
 
+    // Configure the email transport using Gmail
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'ProTrek@gmail.com',
+        pass: 'ichl pjli yasl jmij',
+      },
+    });
+
+    // Define the email options
+    let mailOptions = {
+      from: 'ProTrek@gmail.com',
+      to: assignedToEmail,
+      subject: `New Task Assigned: ${title}`,
+      text: `Hi ${assignedUser.name},\n\nYou have been assigned a new task titled "${title}".\n\nDescription: ${description}\n\nPlease log in to your dashboard to view more details.\n\nBest regards,\nYour Team`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
+
     res.status(201).json(task);
   } catch (err) {
-    console.log(err.message)
+    console.log(err.message);
     res.status(400).json({ error: err.message });
   }
 };
-
 // Delete a task
 const deleteTask = async (req, res) => {
   const { id } = req.params;
