@@ -67,12 +67,18 @@ const postTask = async (req, res) => {
       dueDate,
     });
 
+
     // Configure the email transport using Gmail
     let transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: 'Gmail',
+      host:'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
-        user: 'ProTrek@gmail.com',
-        pass: 'ichl pjli yasl jmij',
+        user: 'protreksystem@gmail.com',
+        pass: 'xzei cgfn ggvr udfp',
+        // user: 'blessedlionel20@gmail.com',
+        // pass: 'ozry drnu likm vynh',
       },
     });
 
@@ -106,6 +112,8 @@ const deleteTask = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "Invalid id" });
   }
+
+  //find
 
   try {
     const task = await Task.findOneAndDelete({ _id: id });
