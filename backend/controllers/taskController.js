@@ -73,10 +73,10 @@ const postTask = async (req, res) => {
       service: 'Gmail',
       host:'smtp.gmail.com',
       port: 465,
-      secure: true,
+      secure:process.env.SSL,
       auth: {
-        user: 'protreksystem@gmail.com',
-        pass: 'xzei cgfn ggvr udfp',
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
         // user: 'blessedlionel20@gmail.com',
         // pass: 'ozry drnu likm vynh',
       },
@@ -84,7 +84,7 @@ const postTask = async (req, res) => {
 
     // Define the email options
     let mailOptions = {
-      from: 'ProTrek@gmail.com',
+      from: process.env.EMAIL_USERNAME,
       to: assignedToEmail,
       subject: `New Task Assigned: ${title}`,
       text: `Hi ${assignedUser.name},\n\nYou have been assigned a new task titled "${title}".\n\nDescription: ${description}\n\nPlease log in to your dashboard to view more details.\n\nBest regards,\nYour Team`,
