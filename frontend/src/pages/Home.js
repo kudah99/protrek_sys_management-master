@@ -36,6 +36,7 @@ function Home() {
   // Calculate percentages for completed and pending tasks
   const completedPercentage = (stats.completedTasks / stats.allTasks) * 100 || 0;
   const pendingPercentage = (stats.pendingTasks / stats.allTasks) * 100 || 0;
+  
 
   return (
     <div className="layout-content">

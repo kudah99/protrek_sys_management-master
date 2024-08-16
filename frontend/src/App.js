@@ -31,7 +31,7 @@ function App() {
         <Route path="/projects/:id" element={user ? <ProjectDetail /> : <Navigate to="/login" />} /> 
         <Route path="/my-team" element={user ? <UsersList /> : <Navigate to="/login" />} />
         <Route path="/my-team/new" element={user ? <AddTeamMember /> : <Navigate to="/login" />} />
-        <Route exact path="/profile" component={Profile} />
+        <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
       </Route>
       
       //Login route
