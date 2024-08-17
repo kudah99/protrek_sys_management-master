@@ -1,51 +1,91 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Row,
+  Col,
+  Card,
+  Button,
+  Avatar,
+  message,
+} from "antd";
+import {
+  VerticalAlignTopOutlined,
+} from "@ant-design/icons";
+import BgProfile from "../assets/images/bg-profile.jpg";
+import profilavatar from "../assets/images/user-circle.svg";
 import { useAuthContext } from "../hooks/useAuthContext";
-import { Card, Space, Modal, Form, Input, Button, message } from 'antd';
-import axios from 'axios';
+import { useLogout } from "../hooks/useLogout";
+import axios from "axios";
 
-const Profile = () => {
-  const { user, setUser } = useAuthContext();
-  const [isModalVisible, setIsModalVisible] = useState(false);
+function Profile() {
+  const [projects, setProjects] = useState([]);
+  const [imageURL, setImageURL] = useState(false);
+  const [, setLoading] = useState(false);
+  const { user } = useAuthContext();
+  const { logout } = useLogout();
+  const navigate = useNavigate();
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const onFinish = async (values) => {
-    try {
-      const response = await axios.put(
-       `${process.env.REACT_APP_BASE_URL}/api/user/edit/`,values, {
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/projects`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.token}`,
-          }
           },
-      );
-
-      // Update the state with the updated user data
-      setUser(response.data);
-      message.success('Profile updated successfully');
-      handleCancel();
-    } catch (error) {
-      if (error.response) {
-        message.error(`Failed to update profile: ${error.response.data.error || error.message}`);
-      } else {
-        message.error('Failed to update profile: Network error');
+        });
+        setProjects(response.data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
       }
+    };
+
+    fetchProjects();
+  }, [user.token]);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result));
+    reader.readAsDataURL(img);
+  };
+
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
+  };
+
+  const handleChange = (info) => {
+    if (info.file.status === "uploading") {
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === "done") {
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        setLoading(false);
+        setImageURL(imageUrl);
+      });
     }
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div>
       <Space direction="vertical" size={16}>
         <Card
           title="My Profile"
           extra={<a onClick={showModal}>EDIT</a>}
-          style={{ width: 500 }}
+          style={{ width: 300 }}
         >
           <p>{user.name}</p>
           <p>{user.email}</p>
@@ -89,6 +129,6 @@ const Profile = () => {
       </Space>
     </div>
   );
-};
+}
 
 export default Profile;

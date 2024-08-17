@@ -15,12 +15,7 @@ import {
   Switch,
 } from "antd";
 
-import {
-  SearchOutlined,
-  StarOutlined,
-  TwitterOutlined,
-  FacebookFilled,
-} from "@ant-design/icons";
+
 
 import { NavLink, Link } from "react-router-dom";
 import styled from "styled-components";
