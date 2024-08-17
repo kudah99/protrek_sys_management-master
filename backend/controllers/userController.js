@@ -37,6 +37,7 @@ const signupUser = async (req, res) => {
   }
 };
 
+// get all users
 const getUsers = async (req, res) => {
   try {
     const users = await User.find({}).select("-password"); // Exclude password field for security
@@ -46,39 +47,55 @@ const getUsers = async (req, res) => {
   }
 };
 
+// update user details
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, email } = req.body;
-
-  let emptyFields = [];
-
-  if (!name) emptyFields.push("name");
-
-  if (emptyFields.length > 0) {
-    return res
-      .status(400)
-      .json({ error: "Please fill in all the fields!", emptyFields });
-  }
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "Invalid id" });
-  }
+  const { name, email, password } = req.body;
 
   try {
-    const user = await User.findOneAndUpdate(
-      { _id: id },
-      { name, email },
-      { new: true }
-    );
+    if (!name && !email && !password) {
+      throw Error("No updates provided.");
+    }
 
+    const updates = {};
+
+    if (name) {
+      updates.name = name;
+    }
+
+    if (email) {
+      if (!validator.isEmail(email)) {
+        throw Error("Invalid Email");
+      }
+
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== id) {
+        throw Error("Email already in use by another account.");
+      }
+      updates.email = email;
+    }
+
+    if (password) {
+      if (!validator.isStrongPassword(password)) {
+        throw Error(
+          "Your password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one symbol. Please try again with a stronger password."
+        );
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      updates.password = await bcrypt.hash(password, salt);
+    }
+
+    const user = await User.findByIdAndUpdate(id, updates, { new: true }).select("-password");
+    
     if (!user) {
-      return res.status(400).json({ error: "No user found" });
+      throw Error("User not found.");
     }
 
     res.status(200).json(user);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
-module.exports = { loginUser, signupUser, getUsers , updateUser};
+module.exports = { loginUser, signupUser, getUsers, updateUser };
