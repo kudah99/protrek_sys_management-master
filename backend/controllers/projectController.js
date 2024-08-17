@@ -94,14 +94,17 @@ const updateProject = async (req, res) => {
   if (!name) emptyFields.push("name");
 
   if (emptyFields.length > 0) {
+    console.log("*****************!55")
     return res
       .status(400)
       .json({ error: "Please fill in all the fields!", emptyFields });
   }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
+    console.log("*****************!67")
     return res.status(404).json({ error: "Invalid id" });
   }
+  console.log("*****************!")
 
   try {
     const project = await Project.findOneAndUpdate(
@@ -109,13 +112,16 @@ const updateProject = async (req, res) => {
       { name, description },
       { new: true }
     );
+    console.log("****************#!")
 
     if (!project) {
+      console.log("*****************!78")
       return res.status(400).json({ error: "No project found" });
     }
 
     res.status(200).json(project);
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: err.message });
   }
 };

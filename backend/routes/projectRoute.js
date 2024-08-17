@@ -29,6 +29,6 @@ router.post("/", postProject);
 router.delete("/:id", deleteProject);
 
 // UPDATE a project
-router.patch("/:id", updateProject);
+router.put("/:id", updateProject);
 
 module.exports = router;
