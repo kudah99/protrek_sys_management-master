@@ -80,54 +80,60 @@ function Profile() {
   };
 
   return (
-    <div>
-      <Space direction="vertical" size={16}>
-        <Card
-          title="My Profile"
-          extra={<a onClick={showModal}>EDIT</a>}
-          style={{ width: 300 }}
-        >
-          <p>{user.name}</p>
-          <p>{user.email}</p>
-        </Card>
+    <>
+      <div
+        className="profile-nav-bg"
+        style={{ backgroundImage: `url(${BgProfile})` }}
+      ></div>
 
-        <Modal
-          title="Edit Profile"
-          visible={isModalVisible}
-          onCancel={handleCancel}
-          footer={null}
-        >
-          <Form
-            name="editProfile"
-            initialValues={{ name: user.name, email: user.email }}
-            onFinish={onFinish}
-            layout="vertical"
+      <Card
+        className="card-profile-head"
+        bodyStyle={{ display: "none" }}
+        title={
+          <Row justify="space-between" align="middle" gutter={[24, 0]}>
+            <Col span={24} md={12} className="col-info">
+              <Avatar.Group>
+                <Avatar size={74} shape="square" src={profilavatar} />
+
+                <div className="avatar-info">
+                  <h4 className="font-semibold m-0">{user.name}</h4>
+                  <p>{user.email}</p>
+                </div>
+              </Avatar.Group>
+            </Col>
+            <Col
+              span={24}
+              md={12}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button type="primary" onClick={handleLogout}>Logout</Button>
+            </Col>
+          </Row>
+        }
+      ></Card>
+
+      <Row gutter={[24, 0]}>
+        <Col span={24} md={8} className="mb-24">
+          <Card
+            bordered={false}
+            className="header-solid h-full"
+            title={<h6 className="font-semibold m-0">My Projects</h6>}
           >
-            <Form.Item
-              label="Name"
-              name="name"
-              rules={[{ required: true, message: 'Please input your name!' }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[{ required: true, message: 'Please input your email!' }, { type: 'email' }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Update
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-      </Space>
-    </div>
+            <ul className="list settings-list">
+              {projects.map((project) => (
+                <li key={project._id}>
+                  <strong>{project.name}</strong>: {project.description}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </Col>
+      </Row>
+    </>
   );
 }
 
