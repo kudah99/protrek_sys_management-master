@@ -132,11 +132,10 @@ const deleteTask = async (req, res) => {
 const updateTask = async (req, res) => {
   const { id } = req.params;
   const { title, description, project, assignedTo, status, dueDate } = req.body;
-
+  console.log(req.body);
   let emptyFields = [];
 
   if (!title) emptyFields.push("title");
-  if (!project) emptyFields.push("project");
 
   if (emptyFields.length > 0) {
     return res

@@ -46,4 +46,39 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, signupUser, getUsers };
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { name, email } = req.body;
+
+  let emptyFields = [];
+
+  if (!name) emptyFields.push("name");
+
+  if (emptyFields.length > 0) {
+    return res
+      .status(400)
+      .json({ error: "Please fill in all the fields!", emptyFields });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Invalid id" });
+  }
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      { name, email },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(400).json({ error: "No user found" });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { loginUser, signupUser, getUsers , updateUser};

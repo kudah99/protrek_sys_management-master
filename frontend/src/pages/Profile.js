@@ -18,7 +18,7 @@ const Profile = () => {
   const onFinish = async (values) => {
     try {
       const response = await axios.put(
-       `${process.env.REACT_APP_BASE_URL}/api/user/edit`,values, {
+       `${process.env.REACT_APP_BASE_URL}/api/user/edit/`,values, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.token}`,

@@ -9,8 +9,11 @@ import moment from 'moment';
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentProject, setCurrentProject] = useState(null);
   const { user } = useAuthContext();
   const navigate = useNavigate();
+  const [form] = Form.useForm();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -59,10 +62,49 @@ const Projects = () => {
       setProjects((prevProjects) => [...prevProjects, response.data]);
       message.success("Project created successfully!");
       setIsModalVisible(false);
+      form.resetFields();
     } catch (error) {
       console.error("Failed to create project:", error);
       message.error("Failed to create project. Please try again.");
     }
+  };
+
+  const handleEditProject = async (values) => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/api/projects/${currentProject._id}`,
+        values,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      setProjects((prevProjects) =>
+        prevProjects.map((project) =>
+          project._id === currentProject._id ? response.data : project
+        )
+      );
+      message.success("Project updated successfully!");
+      setIsModalVisible(false);
+      setCurrentProject(null);
+      setIsEditing(false);
+      form.resetFields();
+    } catch (error) {
+      console.error("Failed to update project:", error);
+      message.error("Failed to update project. Please try again.");
+    }
+  };
+
+  const openEditModal = (project) => {
+    setIsEditing(true);
+    setCurrentProject(project);
+    setIsModalVisible(true);
+    form.setFieldsValue({
+      name: project.name,
+      description: project.description,
+    });
   };
 
   const columns = [
@@ -88,7 +130,7 @@ const Projects = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => navigate(`/projects/edit/${record._id}`)}>
+          <Button type="link" onClick={() => openEditModal(record)}>
             Edit
           </Button>
           <Button type="link" danger onClick={() => handleDelete(record._id)}>
@@ -98,6 +140,14 @@ const Projects = () => {
       ),
     },
   ];
+
+  const handleModalSubmit = (values) => {
+    if (isEditing) {
+      handleEditProject(values);
+    } else {
+      handleAddProject(values);
+    }
+  };
 
   return (
     <div>
@@ -109,8 +159,10 @@ const Projects = () => {
             type="primary"
             icon={<PlusCircleOutlined />}
             onClick={() => {
-              console.log("Opening modal...");
+              setIsEditing(false);
+              setCurrentProject(null);
               setIsModalVisible(true);
+              form.resetFields();
             }}
           >
             Add new project
@@ -120,17 +172,20 @@ const Projects = () => {
         <Table columns={columns} dataSource={projects} rowKey="_id" />
       </Card>
       <Modal
-        title="Create New Project"
+        title={isEditing ? "Edit Project" : "Create New Project"}
         visible={isModalVisible}
         onCancel={() => {
-          console.log("Closing modal...");
           setIsModalVisible(false);
+          setCurrentProject(null);
+          setIsEditing(false);
+          form.resetFields();
         }}
         footer={null}
       >
         <Form
+          form={form}
           layout="vertical"
-          onFinish={handleAddProject}
+          onFinish={handleModalSubmit}
         >
           <Form.Item
             label="Name"
@@ -148,7 +203,7 @@ const Projects = () => {
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Submit
+              {isEditing ? "Update" : "Submit"}
             </Button>
           </Form.Item>
         </Form>

@@ -10,8 +10,10 @@ router.post("/login", loginUser);
 // sign up route
 router.post("/signup", signupUser);
 
-// // update route
-// router.put("/edit", updateUser);
+// update route
+router.put("/edit/:id", updateUser);
+
+
 
 // get users
 router.get('/all',getUsers)
