@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Project = require("../models/projectModel");
+const upload = require("../config/multer");
 
 // Get all projects
 const getAllProjects = async (req, res) => {
@@ -34,6 +35,7 @@ const getSingleProject = async (req, res) => {
   }
 };
 
+
 // Post a new project
 const postProject = async (req, res) => {
   const { name, description } = req.body;
@@ -50,10 +52,12 @@ const postProject = async (req, res) => {
 
   try {
     const owner = req.user._id;
-    console.log(owner);
+    const document = req.file ? req.file.path : null; // File path if document is uploaded
+
     const project = await Project.create({
       name,
       description,
+      document,
       owner,
     });
 
@@ -62,6 +66,7 @@ const postProject = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
 
 // Delete a project
 const deleteProject = async (req, res) => {

@@ -13,6 +13,9 @@ const projectSchema = new Schema(
       type: String,
       trim: true,
     },
+    document: {
+      type: String, // Store the file path or URL
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

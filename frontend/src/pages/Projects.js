@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Table, Space, Card, Button, Modal, Form, Input, message } from "antd";
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { Table, Space, Card, Button, Modal, Form, Input, Upload, message } from "antd";
+import { PlusCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import axios from "axios";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useNavigate } from "react-router-dom";
@@ -48,13 +48,20 @@ const Projects = () => {
   };
 
   const handleAddProject = async (values) => {
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('description', values.description);
+    if (values.document) {
+      formData.append('document', values.document.file);
+    }
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/api/projects`,
-        values,
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${user.token}`,
           },
         }
@@ -70,13 +77,20 @@ const Projects = () => {
   };
 
   const handleEditProject = async (values) => {
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('description', values.description);
+    if (values.document) {
+      formData.append('document', values.document.file.originFileObj);
+    }
+
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/api/projects/${currentProject._id}`,
-        values,
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${user.token}`,
           },
         }
@@ -200,6 +214,16 @@ const Projects = () => {
             rules={[{ required: true, message: 'Please input the project description!' }]}
           >
             <Input.TextArea placeholder="Project Description" />
+          </Form.Item>
+          <Form.Item
+            label="Document"
+            name="document"
+            valuePropName="file"
+            getValueFromEvent={(e) => e.fileList[0]}
+          >
+            <Upload beforeUpload={() => false}>
+              <Button icon={<UploadOutlined />}>Click to upload</Button>
+            </Upload>
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">

@@ -8,6 +8,7 @@ const {
   deleteProject,
 } = require("../controllers/projectController");
 const requireAuth = require("../middlewares/requireAuth");
+const upload = require("../config/multer");
 
 // router
 const router = express.Router();
@@ -23,7 +24,7 @@ router.get("/", getAllProjects);
 router.get("/:id", getSingleProject);
 
 // POST a new project
-router.post("/", postProject);
+router.post("/", upload.single("document"), postProject);
 
 // DELETE a project
 router.delete("/:id", deleteProject);
