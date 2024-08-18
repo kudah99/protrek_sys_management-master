@@ -77,8 +77,6 @@ const postTask = async (req, res) => {
       auth: {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
-        // user: 'blessedlionel20@gmail.com',
-        // pass: 'ozry drnu likm vynh',
       },
     });
 
