@@ -70,7 +70,7 @@ const sendEmail = (task) => {
 // Cron job runs every 10 minutes
 nodeCron.schedule("*/10 * * * *", async () => {
   try {
-    print("Checking deadlines started....")
+    console.log("Checking deadlines started....")
     const now = new Date();
     const startOfDay = new Date(now.setHours(0, 0, 0, 0));
     const endOfDay = new Date(now.setHours(23, 59, 59, 999));
